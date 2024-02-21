@@ -38,8 +38,8 @@ h2 {
 }
 
 .stars button {
-    background-color: #444;
-    border: none;
+    background-color: rgba(0,0,0,0.00);
+    border: 2px solid #eee;
     padding: 0px 20px;
     cursor: pointer;
     color: #eee;
@@ -47,10 +47,18 @@ h2 {
     height: 50px;
     margin-top: 20px;
 	border-radius: 5px;
+	transition: all 0.2s;
+	color: white;
+	font-weight: bold;
 }
 
 .stars button:hover {
-  background-color: #666; /* Lighter dark gray */
+  background-color: rgba(255,255,255,0.25);
+}
+
+.stars button.active {
+	background-color: rgba(255,255,255,1);
+	color: black;
 }
 
 #result {
@@ -72,7 +80,7 @@ h2 {
   width: 100px;
   height: 160px;
   border-radius: 5px;
-  border: 2px solid #eee; /* White */
+  border: 2px solid #eee;
   margin-right: 20px;
 }
 

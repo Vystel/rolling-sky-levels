@@ -747,6 +747,6 @@ function getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
     window.onload = function() {
-      var randomNumber = getRandomInt(1, 183);
+      var randomNumber = getRandomInt(1, 182);
       document.body.style.backgroundImage = "url('backgrounds/background (" + randomNumber + ").png')";
     };
