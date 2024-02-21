@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RS Official Difficulty Ratings</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Rolling Sky</h1>
+	<h2>Official Difficulty Ratings</h2>
+    <div class="sort-container">
+      <label for="sort-dropdown">Sort By:</label>
+      <select id="sort-dropdown">
+        <option value="default">Default</option>
+        <option value="passing">Passing Value</option>
+        <option value="perfect">Perfect Value</option>
+		<option value="average">Average Value</option>
+      </select>
+    </div>
+	  <div>
+    <input type="checkbox" id="move-levels" />
+    <label for="move-levels">Move Levels From Other Stars</label>
+  </div>
+
+  <div>
+    <input type="checkbox" id="show-all-levels" />
+    <label for="show-all-levels">Show All Levels</label>
+  </div>
+    <div class="stars">
+      <button id="1 Star">1</button>
+      <button id="2 Star">2</button>
+      <button id="3 Star">3</button>
+      <button id="4 Star">4</button>
+      <button id="5 Star">5</button>
+      <button id="6 Star">6</button>
+    </div>
+    <div id="result"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
