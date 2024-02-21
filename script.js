@@ -658,8 +658,12 @@ const starData = [
 
 const resultDiv = document.getElementById("result");
 const stars = document.querySelectorAll(".stars button");
+const sortDropdown = document.getElementById("sort-dropdown");
+const moveLevelsCheckbox = document.getElementById("move-levels");
 let selectedSort = "default";
+let moveLevels = false;
 
+// Function to create level item
 function createLevelItem(levelData) {
   const levelDiv = document.createElement("div");
   levelDiv.classList.add("level");
@@ -698,22 +702,61 @@ function createLevelItem(levelData) {
   return levelDiv;
 }
 
+// Event listener for move levels checkbox change
+moveLevelsCheckbox.addEventListener("change", (event) => {
+  moveLevels = event.target.checked;
+  const activeStar = document.querySelector(".stars button.active");
+  const selectedStar = starData.find((star) => star.id === activeStar.id);
+  sortLevels(selectedStar);
+});
+
+// Function to sort levels
 function sortLevels(star) {
   const selectedStar = star;
-  const sortedLevels = selectedStar.levels.slice();
+  let sortedLevels = [];
 
-  const sortFunctions = {
-    default: (a, b) => 0,
-    passing: (a, b) => parseFloat(a.passing) - parseFloat(b.passing),
-    perfect: (a, b) => parseFloat(a.perfect) - parseFloat(b.perfect),
-    average: (a, b) => {
-      const avgA = (parseFloat(a.passing) + parseFloat(a.perfect)) / 2;
-      const avgB = (parseFloat(b.passing) + parseFloat(b.perfect)) / 2;
-      return avgA - avgB;
-    }
+  const selectedSortFunction = {
+    default: () => selectedStar.levels,
+    passing: () => selectedStar.levels.filter(level => parseInt(level.passing[0]) >= parseInt(selectedStar.id[0])),
+    perfect: () => selectedStar.levels.filter(level => {
+      const levelRange = parseInt(level.perfect[0]);
+      const starRange = parseInt(selectedStar.id[0]);
+      return levelRange <= starRange;
+    }),
+    average: () => selectedStar.levels.filter(level => {
+      const average = (parseFloat(level.passing) + parseFloat(level.perfect)) / 2;
+      return parseInt(average.toString()[0]) >= parseInt(selectedStar.id[0]);
+    })
   };
 
-  sortedLevels.sort(sortFunctions[selectedSort]);
+  if (moveLevels) {
+    sortedLevels = selectedSortFunction[selectedSort]();
+
+    // Move levels from other stars if the checkbox is checked
+    const currentSort = selectedSort === "default" ? "passing" : selectedSort;
+    const starRange = parseInt(selectedStar.id[0]);
+    for (const otherStar of starData) {
+      if (otherStar.id !== selectedStar.id) {
+        const otherLevels = otherStar.levels.filter((level) => {
+          const levelValue = parseFloat(level[currentSort]);
+          const levelRange = parseInt(levelValue.toString()[0]);
+          return levelRange === starRange;
+        });
+        sortedLevels = sortedLevels.concat(otherLevels);
+      }
+    }
+  } else {
+    sortedLevels = selectedStar.levels;
+  }
+
+  sortedLevels.sort((a, b) => {
+    const sortFunction = {
+      passing: (a, b) => parseFloat(a.passing) - parseFloat(b.passing),
+      perfect: (a, b) => parseFloat(a.perfect) - parseFloat(b.perfect),
+      default: () => 0
+    };
+    return sortFunction[selectedSort](a, b);
+  });
 
   resultDiv.innerHTML = "";
   for (const level of sortedLevels) {
@@ -722,8 +765,7 @@ function sortLevels(star) {
   }
 }
 
-const sortDropdown = document.getElementById("sort-dropdown");
-
+// Event listener for sort dropdown change
 sortDropdown.addEventListener("change", (event) => {
     selectedSort = event.target.value;
     const activeStar = document.querySelector(".stars button.active");
@@ -731,6 +773,7 @@ sortDropdown.addEventListener("change", (event) => {
     sortLevels(selectedStar);
 });
 
+// Event listener for star buttons
 stars.forEach((starButton) => {
   starButton.addEventListener("click", () => {
     stars.forEach((s) => s.classList.remove("active"));
@@ -743,6 +786,7 @@ stars.forEach((starButton) => {
   });
 });
 
+// Random background image
 function getRandomInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
