@@ -716,23 +716,31 @@ function sortLevels(star) {
   let sortedLevels = selectedStar.levels.slice();
 
   if (moveLevels) {
-    const sortKey = selectedSort === 'passing' ? 'passing' : 'perfect';
-    const selectedSortValue = parseFloat(selectedStar.id.split(' ')[0]);
-    const otherStars = starData.filter(s => parseFloat(s.id.split(' ')[0]) !== selectedSortValue);
+  const sortKey = selectedSort === 'passing' ? 'passing' : 'perfect';
+  const selectedSortValue = parseFloat(selectedStar.id.split(' ')[0]);
+  const otherStars = starData.filter(s => parseFloat(s.id.split(' ')[0]) !== selectedSortValue);
 
-    for (const otherStar of otherStars) {
-      const otherStarLevels = otherStar.levels.filter(level => {
-        const levelSortValue = Math.floor(parseFloat(level[sortKey]));
-        return levelSortValue === selectedSortValue;
-      });
-      sortedLevels = sortedLevels.concat(otherStarLevels);
-    }
-
-    sortedLevels = sortedLevels.filter(level => {
+  for (const otherStar of otherStars) {
+    const otherStarLevels = otherStar.levels.filter(level => {
       const levelSortValue = Math.floor(parseFloat(level[sortKey]));
-      return levelSortValue === selectedSortValue;
+      if (selectedStar.id === "1 Star") {
+        return levelSortValue === 0 || levelSortValue === 1;
+      } else {
+        return levelSortValue === selectedSortValue;
+      }
     });
+    sortedLevels = sortedLevels.concat(otherStarLevels);
   }
+
+  sortedLevels = sortedLevels.filter(level => {
+    const levelSortValue = Math.floor(parseFloat(level[sortKey]));
+    if (selectedStar.id === "1 Star") {
+      return levelSortValue === 0 || levelSortValue === 1;
+    } else {
+      return levelSortValue === selectedSortValue;
+    }
+  });
+}
 
   const sortFunctions = {
     default: (a, b) => 0,
