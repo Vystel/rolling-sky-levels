@@ -153,7 +153,7 @@ const starData = [
                 perfect: "4.7"
             },
             {
-                title: "Star",
+                title: "Stars",
                 passing: "2.8",
                 perfect: "4.2"
             },
@@ -713,50 +713,39 @@ moveLevelsCheckbox.addEventListener("change", (event) => {
 // Function to sort levels
 function sortLevels(star) {
   const selectedStar = star;
-  let sortedLevels = [];
-
-  const selectedSortFunction = {
-    default: () => selectedStar.levels,
-    passing: () => selectedStar.levels.filter(level => parseInt(level.passing[0]) >= parseInt(selectedStar.id[0])),
-    perfect: () => selectedStar.levels.filter(level => {
-      const levelRange = parseInt(level.perfect[0]);
-      const starRange = parseInt(selectedStar.id[0]);
-      return levelRange <= starRange;
-    }),
-    average: () => selectedStar.levels.filter(level => {
-      const average = (parseFloat(level.passing) + parseFloat(level.perfect)) / 2;
-      return parseInt(average.toString()[0]) >= parseInt(selectedStar.id[0]);
-    })
-  };
+  let sortedLevels = selectedStar.levels.slice();
 
   if (moveLevels) {
-    sortedLevels = selectedSortFunction[selectedSort]();
+    const sortKey = selectedSort === 'passing' ? 'passing' : 'perfect';
+    const selectedSortValue = parseFloat(selectedStar.id.split(' ')[0]);
+    const otherStars = starData.filter(s => parseFloat(s.id.split(' ')[0]) !== selectedSortValue);
 
-    // Move levels from other stars if the checkbox is checked
-    const currentSort = selectedSort === "default" ? "passing" : selectedSort;
-    const starRange = parseInt(selectedStar.id[0]);
-    for (const otherStar of starData) {
-      if (otherStar.id !== selectedStar.id) {
-        const otherLevels = otherStar.levels.filter((level) => {
-          const levelValue = parseFloat(level[currentSort]);
-          const levelRange = parseInt(levelValue.toString()[0]);
-          return levelRange === starRange;
-        });
-        sortedLevels = sortedLevels.concat(otherLevels);
-      }
+    for (const otherStar of otherStars) {
+      const otherStarLevels = otherStar.levels.filter(level => {
+        const levelSortValue = Math.floor(parseFloat(level[sortKey]));
+        return levelSortValue === selectedSortValue;
+      });
+      sortedLevels = sortedLevels.concat(otherStarLevels);
     }
-  } else {
-    sortedLevels = selectedStar.levels;
+
+    sortedLevels = sortedLevels.filter(level => {
+      const levelSortValue = Math.floor(parseFloat(level[sortKey]));
+      return levelSortValue === selectedSortValue;
+    });
   }
 
-  sortedLevels.sort((a, b) => {
-    const sortFunction = {
-      passing: (a, b) => parseFloat(a.passing) - parseFloat(b.passing),
-      perfect: (a, b) => parseFloat(a.perfect) - parseFloat(b.perfect),
-      default: () => 0
-    };
-    return sortFunction[selectedSort](a, b);
-  });
+  const sortFunctions = {
+    default: (a, b) => 0,
+    passing: (a, b) => parseFloat(a.passing) - parseFloat(b.passing),
+    perfect: (a, b) => parseFloat(a.perfect) - parseFloat(b.perfect),
+    average: (a, b) => {
+      const avgA = (parseFloat(a.passing) + parseFloat(a.perfect)) / 2;
+      const avgB = (parseFloat(b.passing) + parseFloat(b.perfect)) / 2;
+      return avgA - avgB;
+    }
+  };
+
+  sortedLevels.sort(sortFunctions[selectedSort]);
 
   resultDiv.innerHTML = "";
   for (const level of sortedLevels) {
