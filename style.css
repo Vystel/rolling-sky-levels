@@ -101,21 +101,34 @@ h2 {
 	margin-top: 5px;
 }
 
-.sort-container {
+.sort-container,
+.display-container {
 	margin-bottom: 20px;
 	display: flex;
 	align-items: center;
+	font-family: sans-serif;
 }
 
-.sort-container label {
+.sort-container label,
+.display-container label {
 	margin-right: 10px;
-	color: #eee;
+	color: #fff;
+	font-family: sans-serif;
 }
 
-#sort-dropdown {
+#sort-dropdown,
+#display-dropdown {
 	padding: 5px;
-	border: 1px solid #eee;
-	border-radius: 3px;
-	background-color: #444;
-	color: #eee;
+	border: 2px solid #fff;
+	border-radius: 5px;
+	background-color: rgba(0, 0, 0, 0.00);
+	color: #fff;
+	font-family: sans-serif;
+}
+
+#sort-dropdown option,
+#display-dropdown option {
+	background-color: white;
+	color: black;
+	font-family: sans-serif;
 }

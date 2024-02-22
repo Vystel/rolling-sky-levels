@@ -1,4 +1,5 @@
-const starData = [{
+const starData = [
+	{
 		id: "1 Star",
 		levels: [{
 				title: "Cloud",
@@ -652,9 +653,9 @@ const starData = [{
 const resultDiv = document.getElementById("result");
 const stars = document.querySelectorAll(".stars button");
 const sortDropdown = document.getElementById("sort-dropdown");
-const moveLevelsCheckbox = document.getElementById("move-levels");
+const displayDropdown = document.getElementById("display-dropdown");
 let selectedSort = "default";
-let moveLevels = false;
+let selectedCategorization = "default";
 
 // Function to create level item
 function createLevelItem(levelData) {
@@ -695,20 +696,12 @@ function createLevelItem(levelData) {
 	return levelDiv;
 }
 
-// Event listener for move levels checkbox change
-moveLevelsCheckbox.addEventListener("change", (event) => {
-	moveLevels = event.target.checked;
-	const activeStar = document.querySelector(".stars button.active");
-	const selectedStar = starData.find((star) => star.id === activeStar.id);
-	sortLevels(selectedStar);
-});
-
 // Function to sort levels
 function sortLevels(star) {
 	const selectedStar = star;
 	let sortedLevels = selectedStar.levels.slice();
 
-	if (moveLevels) {
+	if (selectedCategorization === "value") {
 		const sortKey = selectedSort === 'passing' ? 'passing' : 'perfect';
 		const selectedSortValue = parseFloat(selectedStar.id.split(' ')[0]);
 		const otherStars = starData.filter(s => parseFloat(s.id.split(' ')[0]) !== selectedSortValue);
@@ -754,6 +747,14 @@ function sortLevels(star) {
 		resultDiv.appendChild(levelDiv);
 	}
 }
+
+// Event listener for display dropdown change
+displayDropdown.addEventListener("change", (event) => {
+	selectedCategorization = event.target.value;
+	const activeStar = document.querySelector(".stars button.active");
+	const selectedStar = starData.find((star) => star.id === activeStar.id);
+	sortLevels(selectedStar);
+});
 
 // Event listener for sort dropdown change
 sortDropdown.addEventListener("change", (event) => {
