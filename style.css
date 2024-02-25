@@ -73,25 +73,42 @@ h2 {
 }
 
 .level {
-	display: flex;
-	margin-bottom: 20px;
+    position: relative; /* Add this to make the indicator positioning relative to its parent */
+    display: flex;
+    margin-bottom: 20px;
 }
 
 .level img {
-	width: 100px;
-	height: 160px;
-	border-radius: 5px;
-	border: 2px solid #eee;
-	margin-right: 20px;
+    width: 100px;
+    height: 160px;
+    border-radius: 5px;
+    border: 2px solid #eee;
+    margin-right: 20px;
+    transition: all 0.2s ease-in-out;
+    position: relative; /* Add this to establish a positioning context for the indicator */
 }
 
+.level img:hover {
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.state-indicator {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    font-size: 24px;
+    z-index: 1; /* Ensure the indicator is above the image */
+}
+
+
 .level .content {
-	display: flex;
-	flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .level span {
-	font-weight: bold;
+    font-weight: bold;
 }
 
 .level .passing,

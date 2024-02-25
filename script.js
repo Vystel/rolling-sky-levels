@@ -659,41 +659,84 @@ let selectedCategorization = "default";
 
 // Function to create level item
 function createLevelItem(levelData) {
-	const levelDiv = document.createElement("div");
-	levelDiv.classList.add("level");
+    const levelDiv = document.createElement("div");
+    levelDiv.classList.add("level");
 
-	const image = document.createElement("img");
-	image.src = `thumbnails/${levelData.title}.png`;
-	image.alt = levelData.title;
-	levelDiv.appendChild(image);
+    const image = document.createElement("img");
+    image.src = `thumbnails/${levelData.title}.png`;
+    image.alt = levelData.title;
 
-	const contentDiv = document.createElement("div");
-	contentDiv.classList.add("content");
+    let currentState = localStorage.getItem(levelData.title) || 'uncompleted';
+    updateImageState(image, currentState);
 
-	const titleSpan = document.createElement("span");
-	titleSpan.textContent = levelData.title;
-	titleSpan.style.fontWeight = "bold";
-	contentDiv.appendChild(titleSpan);
+    image.addEventListener('click', () => {
+        if (currentState === 'uncompleted') {
+            currentState = 'completed';
+        } else if (currentState === 'completed') {
+            currentState = 'perfected';
+        } else {
+            currentState = 'uncompleted';
+        }
 
-	const passingSpan = document.createElement("span");
-	passingSpan.textContent = `Passing: ${levelData.passing}`;
-	passingSpan.classList.add("passing");
-	contentDiv.appendChild(passingSpan);
+        updateImageState(image, currentState);
+        localStorage.setItem(levelData.title, currentState);
+    });
 
-	const perfectSpan = document.createElement("span");
-	perfectSpan.textContent = `Perfect: ${levelData.perfect}`;
-	perfectSpan.classList.add("perfect");
-	contentDiv.appendChild(perfectSpan);
+    levelDiv.appendChild(image);
 
-	const average = (parseFloat(levelData.passing) + parseFloat(levelData.perfect)) / 2;
-	const averageSpan = document.createElement("span");
-	averageSpan.textContent = `Average: ${average.toFixed(2)}`;
-	averageSpan.classList.add("average");
-	contentDiv.appendChild(averageSpan);
+    const contentDiv = document.createElement("div");
+    contentDiv.classList.add("content");
 
-	levelDiv.appendChild(contentDiv);
+    const titleSpan = document.createElement("span");
+    titleSpan.textContent = levelData.title;
+    titleSpan.style.fontWeight = "bold";
+    contentDiv.appendChild(titleSpan);
 
-	return levelDiv;
+    const passingSpan = document.createElement("span");
+    passingSpan.textContent = `Passing: ${levelData.passing}`;
+    passingSpan.classList.add("passing");
+    contentDiv.appendChild(passingSpan);
+
+    const perfectSpan = document.createElement("span");
+    perfectSpan.textContent = `Perfect: ${levelData.perfect}`;
+    perfectSpan.classList.add("perfect");
+    contentDiv.appendChild(perfectSpan);
+
+    const average = (parseFloat(levelData.passing) + parseFloat(levelData.perfect)) / 2;
+    const averageSpan = document.createElement("span");
+    averageSpan.textContent = `Average: ${average.toFixed(2)}`;
+    averageSpan.classList.add("average");
+    contentDiv.appendChild(averageSpan);
+
+    levelDiv.appendChild(contentDiv);
+
+    return levelDiv;
+}
+
+function updateImageState(image, state) {
+  const existingIndicator = image.querySelector('.state-indicator');
+  if (existingIndicator) {
+    existingIndicator.remove();
+  }
+
+  const indicator = document.createElement('span');
+  indicator.classList.add('state-indicator');
+
+  if (state === 'completed') {
+    indicator.textContent = '✓';
+    indicator.style.color = 'white';
+  } else if (state === 'perfected') {
+    indicator.textContent = '☆';
+    indicator.style.color = 'gold';
+  }
+
+  image.appendChild(indicator);
+
+  if (state === 'uncompleted') {
+    image.style.filter = 'brightness(100%)';
+  } else {
+    image.style.filter = 'brightness(50%)';
+  }
 }
 
 // Function to sort levels
